@@ -7,21 +7,22 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Screen extends JPanel implements Runnable {
-
+    // basic screen dimensions/resolution
     final int ResoScale = 2;
-
-    final int TileSize = 10 * ResoScale; // 10x10
+    final int TileSize = 10 * ResoScale;
     final int ScrWidth = TileSize * 80;
     final int ScrHeight = TileSize * 40;
 
+    // constructed screen basics
     public Screen() {
-        this.setPreferredSize(new Dimension(ScrWidth, ScrHeight));
         this.setDoubleBuffered(getFocusTraversalKeysEnabled());
         // this.addKeyListener(keyValue);
         this.setFocusable(true);
         setBackground(Color.BLACK);
+        this.setPreferredSize(new Dimension(ScrWidth, ScrHeight));
     }
 
+    // page1 child
     public static void Startpg() {
         JFrame Screen = new JFrame();
         Screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,6 +37,7 @@ public class Screen extends JPanel implements Runnable {
 
     }
 
+    // Game loop
     int FPS = 60;
 
     @Override
@@ -43,56 +45,43 @@ public class Screen extends JPanel implements Runnable {
         double actionInterval = 1000000000.0 / FPS;
         double nextAction = System.nanoTime() + actionInterval;
         while (Gthread != null) {
-
             update();
             repaint();
-
             try {
                 double wait = nextAction - System.nanoTime();
                 wait = wait / 1000000;
-
                 if (wait < 0) {
                     wait = 0;
                 }
                 Thread.sleep((long) wait);
                 nextAction += actionInterval;
-
             } catch (Exception e) {
                 System.out.println("Error in game loop");
             }
-
         }
         throw new UnsupportedOperationException("Unimplemented method 'run'");
     }
 
+    // Response to IO data
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D space = (Graphics2D) g;
-        space.setColor(Color.BLUE);
-        space.fillRect(0, 0, TileSize, TileSize);
-        space.setColor(Color.RED);
-        space.fillRect(ScrWidth - TileSize, ScrHeight - TileSize, TileSize, TileSize);
-        space.setColor(Color.GREEN);
-        space.fillRect(ScrWidth - TileSize, 0, TileSize, TileSize);
-        space.setColor(Color.YELLOW);
-        space.fillRect(0, ScrHeight - TileSize, TileSize, TileSize);
-        space.setColor(Color.WHITE);
-        space.fillRect(ScrWidth / 2 - TileSize / 2, ScrHeight / 2 - TileSize / 2, TileSize, TileSize);
-
+        Painter p = new Painter();
+        // painting methods
+        p.ComputeTest((Graphics2D) g, TileSize, ScrWidth, ScrHeight);
+        p.PTSStartBox((Graphics2D) g, TileSize, ScrWidth, ScrHeight);
     }
 
-    int i = 0;
-
+    // IO of screen data
     public void update() {
         Updating u = new Updating();
+        // update methods
         u.Loading();
         u.WritingNewLoad();
     }
 
-    // thread
+    // thread/start
     Thread Gthread;
 
-    // start method
     public void startGthread() {
         Gthread = new Thread(this);
         Gthread.start();
