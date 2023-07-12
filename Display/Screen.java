@@ -6,18 +6,19 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import Keyboard.GameKeyInput;
+
 public class Screen extends JPanel implements Runnable {
     // basic screen dimensions/resolution
     final int ResoScale = 2;
     final int TileSize = 10 * ResoScale;
     final int ScrWidth = TileSize * 80;
     final int ScrHeight = TileSize * 40;
+    static GameKeyInput keyValue = new GameKeyInput();
 
     // constructed screen basics
     public Screen() {
         this.setDoubleBuffered(getFocusTraversalKeysEnabled());
-        // this.addKeyListener(keyValue);
-        this.setFocusable(true);
         setBackground(Color.BLACK);
         this.setPreferredSize(new Dimension(ScrWidth, ScrHeight));
     }
@@ -25,6 +26,8 @@ public class Screen extends JPanel implements Runnable {
     // page1 child
     public static void Startpg() {
         JFrame Screen = new JFrame();
+        Screen.addKeyListener(keyValue);
+        Screen.setFocusable(true);
         Screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Screen.setResizable(false);
         Screen.setTitle("2D Game Engine");
@@ -38,7 +41,7 @@ public class Screen extends JPanel implements Runnable {
     }
 
     // Game loop
-    int FPS = 60;
+    int FPS = 1;
 
     @Override
     public void run() {
@@ -69,14 +72,16 @@ public class Screen extends JPanel implements Runnable {
         // painting methods
         p.ComputeTest((Graphics2D) g, TileSize, ScrWidth, ScrHeight);
         p.PTSStartBox((Graphics2D) g, TileSize, ScrWidth, ScrHeight);
+        p.Player((Graphics2D) g, TileSize, ScrWidth, ScrHeight);
     }
 
     // IO of screen data
+
     public void update() {
         Updating u = new Updating();
         // update methods
         u.Loading();
-        u.WritingNewLoad();
+        u.WritingNewLoad();// add keyvalue so it knows whats happening
     }
 
     // thread/start
